@@ -1,0 +1,18 @@
+server:
+  port: 8086
+
+api-football:
+  # Base URL directa de API-Sports
+  base-url: https://v3.football.api-sports.io
+  # Nunca subas tu key real al repositorio: exporta la variable de entorno
+  # API_FOOTBALL_KEY antes de correr la app, ej:
+  #   export API_FOOTBALL_KEY=tu_key_real
+  api-key: ${API_FOOTBALL_KEY:YOUR_API_KEY}
+  # ID conocido de la Liga BetPlay (Colombia Primera A) en API-Football.
+  # Se deja como referencia, pero el endpoint /api/leagues/search lo confirma
+  # dinamicamente por si cambia o quieres verificarlo tu mismo.
+  liga-betplay-id: 239
+
+logging:
+  level:
+    com.fantasy.ligabetplay: DEBUG
