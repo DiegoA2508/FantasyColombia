@@ -1,0 +1,10 @@
+com\fantasy\ligabetplay\controller\ApiFootballTestController.class
+com\fantasy\ligabetplay\LigaBetplayFantasyApplication.class
+com\fantasy\ligabetplay\config\RestClientConfig.class
+com\fantasy\ligabetplay\entity\League.class
+com\fantasy\ligabetplay\client\ApiFootballClient.class
+com\fantasy\ligabetplay\entity\Fixture.class
+com\fantasy\ligabetplay\config\ApiFootballProperties.class
+com\fantasy\ligabetplay\entity\Team.class
+com\fantasy\ligabetplay\entity\Player.class
+META-INF\spring-configuration-metadata.json
