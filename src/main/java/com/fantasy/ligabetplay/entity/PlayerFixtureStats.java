@@ -2,8 +2,6 @@ package com.fantasy.ligabetplay.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-
-import jakarta.annotation.Generated;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -32,8 +30,8 @@ public class PlayerFixtureStats {
     private Fixture fixture;
 
     @ManyToOne 
-    @JoinColumn(name = "league_id", nullable = false, unique = true)
-    private League league;
+    @JoinColumn(name = "team_id", nullable = false, unique = true)
+    private Team team;
 
     private int minutes;
 
@@ -87,12 +85,12 @@ public class PlayerFixtureStats {
         this.fixture = fixture;
     }
 
-    public League getLeague() {
-        return league;
+    public Team getTeam() {
+        return team;
     }
 
-    public void setLeague(League league) {
-        this.league = league;
+    public void setTeam(Team team) {
+        this.team = team;
     }
 
     public int getMinutes() {
