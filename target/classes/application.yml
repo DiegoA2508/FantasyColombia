@@ -1,7 +1,7 @@
 server:
-  port: 8085
+  port: 8086
 
-spring:
+spring: 
   datasource:
     url: ${DB_URL:jdbc:mysql://localhost:3306/fantasy}
     username: ${DB_USERNAME:root}

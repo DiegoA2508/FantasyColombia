@@ -5,5 +5,13 @@ C:\Users\Diego\Documents\fantasy-colombia\src\main\java\com\fantasy\ligabetplay\
 C:\Users\Diego\Documents\fantasy-colombia\src\main\java\com\fantasy\ligabetplay\entity\Fixture.java
 C:\Users\Diego\Documents\fantasy-colombia\src\main\java\com\fantasy\ligabetplay\entity\League.java
 C:\Users\Diego\Documents\fantasy-colombia\src\main\java\com\fantasy\ligabetplay\entity\Player.java
+C:\Users\Diego\Documents\fantasy-colombia\src\main\java\com\fantasy\ligabetplay\entity\PlayerFixtureAttack.java
+C:\Users\Diego\Documents\fantasy-colombia\src\main\java\com\fantasy\ligabetplay\entity\PlayerFixtureCards.java
+C:\Users\Diego\Documents\fantasy-colombia\src\main\java\com\fantasy\ligabetplay\entity\PlayerFixtureDefense.java
+C:\Users\Diego\Documents\fantasy-colombia\src\main\java\com\fantasy\ligabetplay\entity\PlayerFixtureFouls.java
+C:\Users\Diego\Documents\fantasy-colombia\src\main\java\com\fantasy\ligabetplay\entity\PlayerFixtureGoalkeeping.java
+C:\Users\Diego\Documents\fantasy-colombia\src\main\java\com\fantasy\ligabetplay\entity\PlayerFixturePassing.java
+C:\Users\Diego\Documents\fantasy-colombia\src\main\java\com\fantasy\ligabetplay\entity\PlayerFixturePenalty.java
+C:\Users\Diego\Documents\fantasy-colombia\src\main\java\com\fantasy\ligabetplay\entity\PlayerFixtureStats.java
 C:\Users\Diego\Documents\fantasy-colombia\src\main\java\com\fantasy\ligabetplay\entity\Team.java
 C:\Users\Diego\Documents\fantasy-colombia\src\main\java\com\fantasy\ligabetplay\LigaBetplayFantasyApplication.java
