@@ -81,4 +81,40 @@ public class ApiFootballTestController {
     public JsonNode getPlayerStats(@PathVariable long fixtureId) {
         return client.getPlayerStatsByFixture(fixtureId);
     }
+
+    /**
+     * Paso 4:  Consultar los equipos de una liga en una temporada dada 
+    * GET /api/teams?season=2024
+    * GET /api/teams?leagueId=239&season=2024
+     */
+    @GetMapping("/teams")
+    public JsonNode getTeamLeague(
+            @RequestParam (required = false) Integer leagueId,
+            @RequestParam int season){
+        int idLiga = ( leagueId != null) ? leagueId: properties.ligaBetplayId();
+        return client.getTeamByLeagueAndSeason(idLiga, season);
+    }
+
+    /**
+     * Paso 5: Consultar los jugadores de una liga en una temporada dada.
+     * GET /api/players?season=2024
+     * GET /api/players?leagueId=239&season=2024
+     */
+    @GetMapping("/players")
+    public JsonNode getPlayerLeague(
+            @RequestParam(required = false) Integer leagueId,
+            @RequestParam int season){
+        int idLiga = (leagueId != null) ? leagueId : properties.ligaBetplayId();
+        return client.getPlayersByLeagueAndSeason(idLiga, season);
+    }
+
+    /**
+     * Paso 6: Consultar los jugadores de un partido dado
+     * GET /api/fixtures/players?fixtureId={fixtureId}
+     */
+    @GetMapping("/fixtures/players")
+    public JsonNode getPlayerFixture(
+            @RequestParam long fixtureId){
+        return client.getPlayersByFixture(fixtureId);
+    }
 }

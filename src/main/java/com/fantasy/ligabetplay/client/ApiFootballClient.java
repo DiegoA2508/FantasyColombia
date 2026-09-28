@@ -100,4 +100,47 @@ public class ApiFootballClient {
                 .retrieve()
                 .body(JsonNode.class);
     }
+
+
+    /**
+     * Paso 4: Consultar los equipos de una liga en una temporada dada 
+     * GET /teams?league={leagueId}&season={season}
+     */
+    public JsonNode getTeamByLeagueAndSeason(int leagueId, int season){
+        return restClient.get()
+                .uri(uriBuilder -> uriBuilder.path("/teams")
+                        .queryParam("league", leagueId)
+                        .queryParam("season", season)
+                        .build())
+                .retrieve()
+                .body(JsonNode.class);
+    }
+
+    /**
+     * Paso 5: Consultar los jugadores de una liga en una temporada dada 
+         * GET /players?league={leagueId}&season={season}
+     */
+    public JsonNode getPlayersByLeagueAndSeason(int leagueId, int season){
+        return restClient.get()
+                .uri(uriBuilder -> uriBuilder.path("/players")
+                        .queryParam("league", leagueId)
+                        .queryParam("season", season)
+                        .build())
+                .retrieve()
+                .body(JsonNode.class);
+    }
+
+    /**
+     * Paso 6: Consultar los jugadores de un partido dado
+     * GET /fixtures/players?fixture={fixtureId}
+     */
+    public JsonNode getPlayersByFixture(long fixtureId){
+        return restClient.get()
+                .uri(uriBuilder -> uriBuilder.path("/fixtures/players")
+                .queryParam("fixture", fixtureId)
+                        .build())
+                .retrieve()
+                .body(JsonNode.class);
+    }
+
 }

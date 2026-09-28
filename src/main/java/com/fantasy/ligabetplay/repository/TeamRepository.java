@@ -8,5 +8,5 @@ import com.fantasy.ligabetplay.entity.Team;
 
 public interface TeamRepository extends JpaRepository<Team, Long>{
 
-    Optional<Team> finByApiId(Integer apiId);
+    Optional<Team> findByApiId(Integer apiId);
 }

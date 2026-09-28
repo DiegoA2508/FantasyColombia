@@ -2,6 +2,7 @@ com\fantasy\ligabetplay\LigaBetplayFantasyApplication.class
 com\fantasy\ligabetplay\config\RestClientConfig.class
 com\fantasy\ligabetplay\entity\League.class
 com\fantasy\ligabetplay\client\ApiFootballClient.class
+com\fantasy\ligabetplay\service\FootballSyncService.class
 com\fantasy\ligabetplay\entity\PlayerFixtureDefense.class
 com\fantasy\ligabetplay\entity\PlayerFixturePassing.class
 com\fantasy\ligabetplay\entity\Player.class
