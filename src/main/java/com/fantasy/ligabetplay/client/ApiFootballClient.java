@@ -120,11 +120,12 @@ public class ApiFootballClient {
      * Paso 5: Consultar los jugadores de una liga en una temporada dada 
          * GET /players?league={leagueId}&season={season}
      */
-    public JsonNode getPlayersByLeagueAndSeason(int leagueId, int season){
+    public JsonNode getPlayersByLeagueAndSeason(int leagueId, int season, int page){
         return restClient.get()
                 .uri(uriBuilder -> uriBuilder.path("/players")
                         .queryParam("league", leagueId)
                         .queryParam("season", season)
+                        .queryParam("page", page)
                         .build())
                 .retrieve()
                 .body(JsonNode.class);
@@ -142,5 +143,7 @@ public class ApiFootballClient {
                 .retrieve()
                 .body(JsonNode.class);
     }
+
+
 
 }

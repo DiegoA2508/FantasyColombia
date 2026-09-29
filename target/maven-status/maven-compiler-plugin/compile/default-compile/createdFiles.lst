@@ -12,6 +12,7 @@ META-INF\spring-configuration-metadata.json
 com\fantasy\ligabetplay\controller\ApiFootballTestController.class
 com\fantasy\ligabetplay\entity\PlayerFixturePenalty.class
 com\fantasy\ligabetplay\entity\PlayerFixtureStats.class
+com\fantasy\ligabetplay\repository\PlayerRepository.class
 com\fantasy\ligabetplay\entity\PlayerFixtureCards.class
 com\fantasy\ligabetplay\repository\FixtureRepository.class
 com\fantasy\ligabetplay\entity\Fixture.class
@@ -19,5 +20,4 @@ com\fantasy\ligabetplay\config\ApiFootballProperties.class
 com\fantasy\ligabetplay\entity\PlayerFixtureGoalkeeping.class
 com\fantasy\ligabetplay\entity\Team.class
 com\fantasy\ligabetplay\entity\PlayerFixtureAttack.class
-com\fantasy\ligabetplay\repository\PlayerRespository.class
 com\fantasy\ligabetplay\entity\PlayerFixtureFouls.class

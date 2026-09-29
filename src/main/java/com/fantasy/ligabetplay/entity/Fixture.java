@@ -76,12 +76,12 @@ public class Fixture {
         this.apiId = apiId;
     }
 
-    public League getLeagueId() {
+    public League getLeague() {
         return league;
     }
 
-    public void setLeagueId(League leagueId) {
-        this.league = leagueId;
+    public void setLeague(League league) {
+        this.league = league;
     }
 
     public int getSeason() {
@@ -92,20 +92,20 @@ public class Fixture {
         this.season = season;
     }
 
-    public Team getHomeTeamId() {
+    public Team getHomeTeam() {
         return homeTeam;
     }
 
-    public void setHomeTeamId(Team homeTeamId) {
-        this.homeTeam = homeTeamId;
+    public void setHomeTeam(Team homeTeam) {
+        this.homeTeam = homeTeam;
     }
 
     public Team getAwayTeamId() {
         return awayTeam;
     } 
 
-    public void setAwayTeamId(Team awayTeamId) {
-        this.awayTeam = awayTeamId;
+    public void setAwayTeam(Team awayTeam) {
+        this.awayTeam = awayTeam;
     }  
 
     public LocalDateTime getDate() {

@@ -26,7 +26,7 @@ public class Team {
 
     @ManyToOne 
     @JoinColumn (name = "league_id", nullable = false) 
-    private League leagueId;
+    private League league;
 
     @Column (nullable = false, length = 100)
     private String name;
@@ -68,12 +68,12 @@ public class Team {
         this.apiId = apiId;
     }
 
-    public League getLeagueId() {
-        return leagueId;
+    public League getLeague() {
+        return league;
     }
 
-    public void setLeagueId(League leagueId) {
-        this.leagueId = leagueId;
+    public void setLeague(League league) {
+        this.league = league;
     }
 
     public String getName() {

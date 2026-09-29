@@ -2,6 +2,8 @@ package com.fantasy.ligabetplay.controller;
 
 import com.fantasy.ligabetplay.client.ApiFootballClient;
 import com.fantasy.ligabetplay.config.ApiFootballProperties;
+import com.fantasy.ligabetplay.entity.League;
+import com.fantasy.ligabetplay.service.FootballSyncService;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,10 +13,12 @@ public class ApiFootballTestController {
 
     private final ApiFootballClient client;
     private final ApiFootballProperties properties;
+    private final FootballSyncService footballSyncService;
 
-    public ApiFootballTestController(ApiFootballClient client, ApiFootballProperties properties) {
+    public ApiFootballTestController(ApiFootballClient client, ApiFootballProperties properties, FootballSyncService footballSyncService) {
         this.client = client;
         this.properties = properties;
+        this.footballSyncService = footballSyncService;
     }
 
     /**
@@ -103,9 +107,9 @@ public class ApiFootballTestController {
     @GetMapping("/players")
     public JsonNode getPlayerLeague(
             @RequestParam(required = false) Integer leagueId,
-            @RequestParam int season){
+            @RequestParam int season, @RequestParam int page){
         int idLiga = (leagueId != null) ? leagueId : properties.ligaBetplayId();
-        return client.getPlayersByLeagueAndSeason(idLiga, season);
+        return client.getPlayersByLeagueAndSeason(idLiga, season, page);
     }
 
     /**
@@ -116,5 +120,30 @@ public class ApiFootballTestController {
     public JsonNode getPlayerFixture(
             @RequestParam long fixtureId){
         return client.getPlayersByFixture(fixtureId);
+    }
+
+    @PostMapping("/sync/league")
+    public League syncLeague(){
+        return footballSyncService.syncLeague();
+    } 
+
+    @PostMapping ("/sync/teams")
+    public String syncTeams(){
+
+        footballSyncService.syncTeams();
+
+        return "Equipos sincronizados con exito"; 
+    }
+
+    @PostMapping ("/sync/players")
+    public String syncPlayers(){
+        footballSyncService.syncPlayers();
+        return "Jugadores sincronizados correctamente";
+    }
+
+    @PostMapping ("/sync/fixtures")
+    public String syncFixtures(){
+        footballSyncService.syncFixtures();
+        return "Partidos sincronizados correctamente";
     }
 }

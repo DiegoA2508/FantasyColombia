@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.fantasy.ligabetplay.entity.Player;
 
-public interface PlayerRespository extends JpaRepository<Player, Long>{
+public interface PlayerRepository extends JpaRepository<Player, Long>{
 
     Optional<Player> findByApiId(Integer apiId);
 }
