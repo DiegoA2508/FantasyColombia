@@ -1,5 +1,6 @@
 package com.fantasy.ligabetplay.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -19,6 +20,12 @@ public class PlayerFixtureAttack {
     @OneToOne  
     @JoinColumn(name = "stats_id", nullable = false, unique = true)
     private PlayerFixtureStats attackStats;
+
+    @Column (name = "goals", nullable = false)
+    private int goals;
+
+    @Column (name = "assists", nullable = false)
+    private int assists;
 
     private int shotsTotal;
 
@@ -50,6 +57,22 @@ public class PlayerFixtureAttack {
 
     public void setAttackStats(PlayerFixtureStats attackStats) {
         this.attackStats = attackStats;
+    }
+
+    public int getGoals() {
+        return goals;
+    }
+
+    public void setGoals(int goals) {
+        this.goals = goals;
+    }
+
+    public int getAssists() {
+        return assists;
+    }
+
+    public void setAssists(int assists) {
+        this.assists = assists;
     }
 
     public int getShotsTotal() {

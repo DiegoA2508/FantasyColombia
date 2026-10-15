@@ -1,17 +1,35 @@
 package com.fantasy.ligabetplay.service;
 
-import java.time.LocalDateTime;
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
 import com.fantasy.ligabetplay.client.ApiFootballClient;
 import com.fantasy.ligabetplay.entity.Fixture;
 import com.fantasy.ligabetplay.entity.League;
 import com.fantasy.ligabetplay.entity.Player;
+import com.fantasy.ligabetplay.entity.PlayerFixtureAttack;
+import com.fantasy.ligabetplay.entity.PlayerFixtureCards;
+import com.fantasy.ligabetplay.entity.PlayerFixtureDefense;
+import com.fantasy.ligabetplay.entity.PlayerFixtureFouls;
+import com.fantasy.ligabetplay.entity.PlayerFixtureGoalkeeping;
+import com.fantasy.ligabetplay.entity.PlayerFixturePassing;
+import com.fantasy.ligabetplay.entity.PlayerFixturePenalty;
+import com.fantasy.ligabetplay.entity.PlayerFixtureStats;
 import com.fantasy.ligabetplay.entity.Team;
 import com.fantasy.ligabetplay.repository.FixtureRepository;
 import com.fantasy.ligabetplay.repository.LeagueRepository;
+import com.fantasy.ligabetplay.repository.PlayerFixtureAttackRepository;
+import com.fantasy.ligabetplay.repository.PlayerFixtureCardsRepository;
+import com.fantasy.ligabetplay.repository.PlayerFixtureDefenseRepository;
+import com.fantasy.ligabetplay.repository.PlayerFixtureFoulsRepository;
+import com.fantasy.ligabetplay.repository.PlayerFixtureGoalkeepingRepository;
+import com.fantasy.ligabetplay.repository.PlayerFixturePassingRepository;
+import com.fantasy.ligabetplay.repository.PlayerFixturePenaltyRepository;
+import com.fantasy.ligabetplay.repository.PlayerFixtureStatsRepository;
 import com.fantasy.ligabetplay.repository.PlayerRepository;
 import com.fantasy.ligabetplay.repository.TeamRepository;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -24,14 +42,34 @@ public class FootballSyncService {
     private final TeamRepository teamRepository;
     private final PlayerRepository playerRepository;
     private final FixtureRepository fixtureRepository;
+    private final PlayerFixtureStatsRepository playerFixtureStatsRepository;
+    private final PlayerFixtureAttackRepository playerFixtureAttackRepository;
+    private final PlayerFixtureCardsRepository playerFixtureCardsRepository;
+    private final PlayerFixtureDefenseRepository playerFixtureDefenseRepository;
+    private final PlayerFixtureFoulsRepository playerFixtureFoulsRepository;
+    private final PlayerFixtureGoalkeepingRepository playerFixtureGoalkeepingRepository;
+    private final PlayerFixturePassingRepository playerFixturePassingRepository;
+    private final PlayerFixturePenaltyRepository playerFixturePenaltyRepository;
 
-    public FootballSyncService(ApiFootballClient apiFootballClient, LeagueRepository leagueRepository, TeamRepository teamRepository, PlayerRepository playerRepository,FixtureRepository fixtureRepository){
+    public FootballSyncService(ApiFootballClient apiFootballClient, LeagueRepository leagueRepository, TeamRepository teamRepository, PlayerRepository playerRepository,FixtureRepository fixtureRepository,
+                                PlayerFixtureStatsRepository playerFixtureStatsRepository, PlayerFixtureAttackRepository playerFixtureAttackRepository, PlayerFixtureCardsRepository playerFixtureCardsRepository,
+                                PlayerFixtureDefenseRepository playerFixtureDefenseRepository, PlayerFixtureFoulsRepository playerFixtureFoulsRepository, PlayerFixtureGoalkeepingRepository playerFixtureGoalkeepingRepository,
+                                PlayerFixturePassingRepository playerFixturePassingRepository, PlayerFixturePenaltyRepository playerFixturePenaltyRepository
+    ){
 
         this.apiFootballClient = apiFootballClient;
         this.leagueRepository = leagueRepository;
         this.teamRepository = teamRepository; 
         this.playerRepository = playerRepository;
         this.fixtureRepository = fixtureRepository;
+        this.playerFixtureStatsRepository = playerFixtureStatsRepository;
+        this.playerFixtureAttackRepository = playerFixtureAttackRepository;
+        this.playerFixtureCardsRepository = playerFixtureCardsRepository;
+        this.playerFixtureDefenseRepository = playerFixtureDefenseRepository;
+        this.playerFixtureFoulsRepository = playerFixtureFoulsRepository;
+        this.playerFixtureGoalkeepingRepository = playerFixtureGoalkeepingRepository;
+        this.playerFixturePassingRepository = playerFixturePassingRepository;
+        this.playerFixturePenaltyRepository = playerFixturePenaltyRepository;
     }
 
     public League syncLeague(){
@@ -365,4 +403,465 @@ public class FootballSyncService {
             }
 
     }
+
+    public void syncPlayerFixtureStats() {
+
+        List<Fixture> fixtures = fixtureRepository.findAll();
+
+        System.out.println(
+                "Cantidad de fixtures encontrados: " + fixtures.size());
+
+        int totalTeams = 0;
+        int totalPlayers = 0;
+        int totalSaved = 0;
+        int totalSkipped = 0;
+
+        System.out.println("====== INICIANDO SINCRONIZACIÓN DE STATS ======");
+
+        for (Fixture fixture : fixtures) {
+
+                System.out.println("Procesando fixture API ID: " + fixture.getApiId());
+
+                JsonNode response = null;
+
+                // ==========================================
+                // OBTENER ESTADÍSTICAS DEL FIXTURE
+                // ==========================================
+
+                int intentos = 0;
+                int maxIntentos = 3;
+
+                while (intentos < maxIntentos) {
+
+                try {
+
+                        response = apiFootballClient.getPlayerStatsByFixture(fixture.getApiId());
+
+                        break;
+
+                } catch (HttpClientErrorException.TooManyRequests e) {
+
+                        intentos++;
+
+                        System.out.println("Límite de peticiones alcanzado para fixture "
+                                        + fixture.getApiId()
+                                        + ". Intento "
+                                        + intentos
+                                        + " de "
+                                        + maxIntentos
+                        );
+
+                        if (intentos >= maxIntentos) {
+
+                        System.out.println("Se omitió fixture "+ fixture.getApiId()
+                        );
+
+                        totalSkipped++;
+                        break;
+                        }
+
+                        try {
+
+                        System.out.println("Esperando 20 segundos...");
+
+                        Thread.sleep(20000);
+
+                        } catch (InterruptedException ex) {
+
+                        Thread.currentThread().interrupt();
+
+                        throw new RuntimeException(
+                                "La sincronización fue interrumpida");
+                        }
+                }
+                }
+
+                if (response == null) {
+                continue;
+                }
+
+                // ==========================================
+                // RESPONSE
+                // ==========================================
+
+                JsonNode teams = response.path("response");
+
+                if (!teams.isArray()) {
+
+                System.out.println("Response inválido para fixture "+ fixture.getApiId());
+
+                totalSkipped++;
+                continue;
+                }
+
+                totalTeams += teams.size();
+
+                // ==========================================
+                // EQUIPOS
+                // ==========================================
+
+                for (JsonNode teamNode : teams) {
+
+                Integer teamApiId = teamNode
+                        .path("team")
+                        .path("id")
+                        .asInt();
+
+                Team team = teamRepository
+                        .findByApiId(teamApiId)
+                        .orElseThrow(() ->
+                                new RuntimeException("No se encontró el equipo con API ID: "+ teamApiId)
+                        );
+
+                JsonNode players = teamNode.path("players");
+
+                if (!players.isArray()) {
+                        continue;
+                }
+
+                // ==========================================
+                // JUGADORES
+                // ==========================================
+
+                for (JsonNode playerItem : players) {
+
+                        totalPlayers++;
+
+                        JsonNode playerNode =
+                                playerItem.path("player");
+
+                        JsonNode statistics =
+                                playerItem
+                                        .path("statistics")
+                                        .path(0);
+
+                        if (statistics.isMissingNode()|| statistics.isNull()) {
+
+                                totalSkipped++;
+                                continue;
+                        }
+
+                        Integer playerApiId =
+                                playerNode
+                                        .path("id")
+                                        .asInt();
+
+                        // ==========================================
+                        // PLAYER
+                        // ==========================================
+
+                        Player player = playerRepository
+                                .findByApiId(playerApiId)
+                                .orElseGet(() -> {
+
+                                Player newPlayer = new Player();
+
+                                newPlayer.setApiId(playerApiId);
+
+                                newPlayer.setName(
+                                        playerNode
+                                                .path("name")
+                                                .asText()
+                                );
+
+                                newPlayer.setPhoto(
+                                        playerNode
+                                                .path("photo")
+                                                .asText(null)
+                                );
+
+                                newPlayer.setTeamId(team);
+
+                                newPlayer.setPosition(
+                                        statistics
+                                                .path("games")
+                                                .path("position")
+                                                .asText(null)
+                                );
+
+                                return playerRepository.save(newPlayer);
+                                });
+
+                        // ==========================================
+                        // 1. PLAYER FIXTURE STATS
+                        // ==========================================
+
+                        PlayerFixtureStats stats =
+                                playerFixtureStatsRepository
+                                        .findByPlayerAndFixture(
+                                                player,
+                                                fixture
+                                        )
+                                        .orElse(
+                                                new PlayerFixtureStats()
+                                        );
+
+                        stats.setPlayer(player);
+                        stats.setFixture(fixture);
+                        stats.setTeam(team);
+
+                        JsonNode games =
+                                statistics.path("games");
+
+                        stats.setMinutes(
+                                games.path("minutes").asInt(0)
+                        );
+
+                        stats.setNumber(
+                                games.path("number").asInt(0)
+                        );
+
+                        stats.setPosition(
+                                games.path("position").asText(null)
+                        );
+
+                        if (games.path("rating").isNull()
+                                || games.path("rating")
+                                        .asText()
+                                        .isBlank()) {
+
+                        stats.setRating(null);
+
+                        } else {
+
+                        stats.setRating(
+                                new BigDecimal(
+                                        games.path("rating").asText()
+                                )
+                        );
+                        }
+
+                        stats.setCaptain(
+                                games.path("captain").asBoolean(false)
+                        );
+
+                        stats.setSubstitute(
+                                games.path("substitute").asBoolean(false)
+                        );
+
+                        // Por ahora los puntos se calculan después
+                        stats.setPoints(0);
+
+                        stats = playerFixtureStatsRepository.save(stats);
+
+
+                        // ==========================================
+                        // 2. ATTACK
+                        // ==========================================
+
+                        PlayerFixtureAttack attack =
+                                playerFixtureAttackRepository
+                                        .findByAttackStats(stats)
+                                        .orElse(
+                                                new PlayerFixtureAttack()
+                                        );
+
+                        attack.setAttackStats(stats);
+
+                        JsonNode shots =
+                                statistics.path("shots");
+
+                        JsonNode dribbles =
+                                statistics.path("dribbles");
+
+                        JsonNode goals =
+                                statistics.path("goals");
+
+                        attack.setGoals(goals.path("total").asInt(0));
+
+                        attack.setAssists(goals.path("assists").asInt(0));
+
+                        attack.setShotsTotal(
+                                shots.path("total").asInt(0)
+                        );
+
+                        attack.setShotsOn(
+                                shots.path("on").asInt(0)
+                        );
+
+                        attack.setOffsides(
+                                statistics.path("offsides").asInt(0)
+                        );
+
+                        attack.setDribblesAttempts(
+                                dribbles.path("attempts").asInt(0)
+                        );
+
+                        attack.setDribblesSuccess(
+                                dribbles.path("success").asInt(0)
+                        );
+
+                        attack.setDribblesPast(
+                                dribbles.path("past").asInt(0)
+                        );
+
+                        playerFixtureAttackRepository.save(attack);
+
+
+                        // ==========================================
+                        // 3. PASSING
+                        // ==========================================
+
+                        PlayerFixturePassing passing =
+                                playerFixturePassingRepository
+                                        .findByPassingStats(stats)
+                                        .orElse(
+                                                new PlayerFixturePassing()
+                                        );
+                        
+                        passing.setPassingStats(stats);
+
+                        JsonNode passes = statistics.path("passes");
+
+                        passing.setPassesTotal(passes.path("total").asInt(0));
+
+                        passing.setPassesKey(passes.path("key").asInt(0));
+
+                        passing.setPassesAccuracy(passes.path("accuracy").asInt(0));
+
+                        playerFixturePassingRepository.save(passing);
+
+
+                        // ==========================================
+                        // 4. DEFENSE
+                        // ==========================================
+
+                        PlayerFixtureDefense defense = playerFixtureDefenseRepository
+                                .findByDefenseStats(stats)
+                                .orElse(new PlayerFixtureDefense());
+
+                        defense.setDefenseStats(stats);
+
+                        JsonNode tackles = statistics.path("tackles");
+                        JsonNode duels = statistics.path("duels");
+
+                        defense.setTacklesTotal(tackles.path("total").asInt(0));
+                        defense.setTacklesBlocks(tackles.path("blocks").asInt(0));
+                        defense.setTacklesInterceptions(tackles.path("interceptions").asInt(0));
+                        defense.setDuelsTotal(duels.path("total").asInt(0));
+                        defense.setDuelsWon(duels.path("won").asInt(0));
+
+                        playerFixtureDefenseRepository.save(defense);
+
+
+                        // ==========================================
+                        // 5. FOULS
+                        // ==========================================
+
+                        PlayerFixtureFouls fouls = playerFixtureFoulsRepository
+                                .findByFoulsStats(stats)
+                                .orElse(new PlayerFixtureFouls());
+
+                        fouls.setFoulsStats(stats);
+
+                        JsonNode foulsNode = statistics.path("fouls");
+
+                        fouls.setFoulsDrawn(foulsNode.path("drawn").asInt(0));
+                        fouls.setFoulsCommitted(foulsNode.path("committed").asInt(0));
+
+                        playerFixtureFoulsRepository.save(fouls);
+
+
+                        // ==========================================
+                        // 6. CARDS
+                        // ==========================================
+
+                        PlayerFixtureCards cards = playerFixtureCardsRepository
+                                .findByCardStats(stats)
+                                .orElse(new PlayerFixtureCards());
+                        
+                        cards.setCardStats(stats);
+
+                        JsonNode cardsNode = statistics.path("cards");
+
+                        cards.setYellow(cardsNode.path("yellow").asInt(0));
+                        cards.setRed(cardsNode.path("red").asInt(0));
+
+                        playerFixtureCardsRepository.save(cards);
+
+
+                        // ==========================================
+                        // 7. GOALKEEPING
+                        // ==========================================
+
+                        PlayerFixtureGoalkeeping goalkeeping = playerFixtureGoalkeepingRepository
+                                .findByGoalkeepStats(stats)
+                                .orElse(new PlayerFixtureGoalkeeping());
+                        
+                        goalkeeping.setGoalkeepStats(stats);
+
+                        JsonNode goalsNode = statistics.path("goals");
+
+                        goalkeeping.setGoalsConceded(goalsNode.path("conceded").asInt(0));
+                        goalkeeping.setGoalsSaves(goalsNode.path("saves").asInt(0));
+
+                        playerFixtureGoalkeepingRepository.save(goalkeeping);
+
+
+                        // ==========================================
+                        // 8. PENALTY
+                        // ==========================================
+
+                        PlayerFixturePenalty penalty = playerFixturePenaltyRepository
+                                .findByPenaltyStats(stats)
+                                .orElse(new PlayerFixturePenalty());
+
+                        penalty.setPenaltyStats(stats);
+
+                        JsonNode penaltyNode = statistics.path("penalty");
+
+                        penalty.setPenaltyWon(penaltyNode.path("won").asInt(0));
+                        penalty.setPenaltyCommitted(penaltyNode.path("commited").asInt(0));
+                        penalty.setPenaltyScored(penaltyNode.path("scored").asInt(0));
+                        penalty.setPenaltyMissed(penaltyNode.path("missed").asInt(0));
+                        penalty.setPenaltySaved(penaltyNode.path("saved").asInt(0));
+
+                        playerFixturePenaltyRepository.save(penalty);
+
+                        totalSaved++;
+
+                        System.out.println(
+                                "STATS GUARDADAS -> jugador: "
+                                        + playerApiId
+                                        + " | fixture: "
+                                        + fixture.getApiId()
+                        );
+                }
+                }
+
+                // ==========================================
+                // PAUSA ENTRE FIXTURES
+                // ==========================================
+
+                try {
+
+                Thread.sleep(3000);
+
+                } catch (InterruptedException e) {
+
+                Thread.currentThread().interrupt();
+
+                throw new RuntimeException(
+                        "La sincronización fue interrumpida",
+                        e
+                );
+                }
+        }
+
+        // ==========================================
+        // RESUMEN
+        // ==========================================
+
+        System.out.println("==============================");
+        System.out.println("RESUMEN DE SINCRONIZACIÓN");
+        System.out.println("==============================");
+        System.out.println("Fixtures: " + fixtures.size());
+        System.out.println("Equipos: " + totalTeams);
+        System.out.println("Jugadores: " + totalPlayers);
+        System.out.println("Registros guardados: " + totalSaved);
+        System.out.println("Omitidos: " + totalSkipped);
+        System.out.println("==============================");
+        }
+
+
 }

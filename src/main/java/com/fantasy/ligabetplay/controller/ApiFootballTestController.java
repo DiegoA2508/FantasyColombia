@@ -146,4 +146,11 @@ public class ApiFootballTestController {
         footballSyncService.syncFixtures();
         return "Partidos sincronizados correctamente";
     }
+
+    @PostMapping("/sync/player-fixture-stats")
+    public String syncPlayerFixtureStats(){
+        footballSyncService.syncPlayerFixtureStats();
+
+        return "Estadisticas de jugadores por partido sincronizadas correctamente";
+    }
 }

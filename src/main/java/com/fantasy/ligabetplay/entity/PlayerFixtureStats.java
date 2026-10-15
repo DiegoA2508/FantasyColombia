@@ -22,15 +22,15 @@ public class PlayerFixtureStats {
     private Long id;
 
     @ManyToOne 
-    @JoinColumn(name = "player_id", nullable = false, unique = true)
+    @JoinColumn(name = "player_id", nullable = false, unique = false)
     private Player player;
 
     @ManyToOne 
-    @JoinColumn(name = "fixture_id", nullable = false, unique = true)
+    @JoinColumn(name = "fixture_id", nullable = false, unique = false)
     private Fixture fixture;
 
     @ManyToOne 
-    @JoinColumn(name = "team_id", nullable = false, unique = true)
+    @JoinColumn(name = "team_id", nullable = false, unique = false)
     private Team team;
 
     private int minutes;
