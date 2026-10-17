@@ -2,6 +2,7 @@ C:\Users\Diego\Documents\fantasy-colombia\src\main\java\com\fantasy\ligabetplay\
 C:\Users\Diego\Documents\fantasy-colombia\src\main\java\com\fantasy\ligabetplay\config\ApiFootballProperties.java
 C:\Users\Diego\Documents\fantasy-colombia\src\main\java\com\fantasy\ligabetplay\config\RestClientConfig.java
 C:\Users\Diego\Documents\fantasy-colombia\src\main\java\com\fantasy\ligabetplay\controller\ApiFootballTestController.java
+C:\Users\Diego\Documents\fantasy-colombia\src\main\java\com\fantasy\ligabetplay\controller\FantasyPointsController.java
 C:\Users\Diego\Documents\fantasy-colombia\src\main\java\com\fantasy\ligabetplay\entity\Fixture.java
 C:\Users\Diego\Documents\fantasy-colombia\src\main\java\com\fantasy\ligabetplay\entity\League.java
 C:\Users\Diego\Documents\fantasy-colombia\src\main\java\com\fantasy\ligabetplay\entity\Player.java
@@ -27,4 +28,5 @@ C:\Users\Diego\Documents\fantasy-colombia\src\main\java\com\fantasy\ligabetplay\
 C:\Users\Diego\Documents\fantasy-colombia\src\main\java\com\fantasy\ligabetplay\repository\PlayerFixtureStatsRepository.java
 C:\Users\Diego\Documents\fantasy-colombia\src\main\java\com\fantasy\ligabetplay\repository\PlayerRepository.java
 C:\Users\Diego\Documents\fantasy-colombia\src\main\java\com\fantasy\ligabetplay\repository\TeamRepository.java
+C:\Users\Diego\Documents\fantasy-colombia\src\main\java\com\fantasy\ligabetplay\service\FantasyPointsService.java
 C:\Users\Diego\Documents\fantasy-colombia\src\main\java\com\fantasy\ligabetplay\service\FootballSyncService.java
